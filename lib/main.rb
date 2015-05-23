@@ -17,22 +17,26 @@
 
 #   This is an implementation of Conway's Game of Life
 
-require './conway.rb'
+require_relative './conway.rb'
 require 'gtk3'
 
 Gtk.init
-
+# No documentation for now
 class ProgramWindow < Gtk::Window
   def initialize(related_world)
-
     super()
 
     self.title = "Conway's game of life"
     set_size_request(300, 300)
+    set_resizable(false)
 
     # Set global image objects for each cell type (alive/dead)
-    @IMG_CELL_ALIVE = Gdk::Pixbuf.new(file: '../assets/circle.png')
-    @IMG_CELL_DEAD = Gdk::Pixbuf.new(file: '../assets/cross.png')
+    parent_directory = File.expand_path("..", File.dirname(__FILE__))
+    @IMG_CELL_ALIVE = Gdk::Pixbuf.new(file:
+                                      parent_directory + '/assets/circle.png')
+
+    @IMG_CELL_DEAD = Gdk::Pixbuf.new(file:
+                                     parent_directory + '/assets/cross.png')
 
     # Save the world ;)
     @world = related_world
@@ -56,8 +60,8 @@ class ProgramWindow < Gtk::Window
     @button_next_gen.expand = true
 
     # We should center the cell_grid
-    #refresh_cells!
     @cell_alignment << @cell_grid
+
     layout_grid.attach(@cell_alignment, 0, 0, x, y)
     layout_grid.attach(@button_next_gen, 0, y, x, 1)
 
@@ -81,10 +85,6 @@ class ProgramWindow < Gtk::Window
 
   def get_new_cell_grid
     new_cell_grid = Gtk::Grid.new
-    #new_cell_grid.expand = true
-
-
-    # TODO: Move the stuff below to a function called 'draw_cells!'
 
     (0...@world.height).each do |y|
       (0...@world.width).each do |x|
@@ -96,9 +96,10 @@ class ProgramWindow < Gtk::Window
 
     return new_cell_grid
   end
-end
 
-program_world = World.new(5, 5, 8)
+end # End of class ProgramWindow
+
+program_world = World::new(5, 5, 8)
 
 program_gui = ProgramWindow.new(program_world)
 

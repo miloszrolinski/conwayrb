@@ -13,41 +13,33 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class World
+# Game class is for manipulating the cells
+# (adding life/calculating neighbors & survival). Cells are represented
+# as a 2D array of boolean values (true = alive/ false = dead)
+class Game
+  attr_reader :width, :height
   attr_accessor :universe
 
-  public
-	def initialize(width, height, live_cells)
-    @Width = width
-    @Height = height
-		@universe = Array.new(@Height) { Array.new(@Width, false) }
+  def initialize(width, height, live_cells)
+    @width = width
+    @height = height
+    @universe = Array.new(@height) { Array.new(@width, false) }
     add_life!(live_cells)
-	end
-
-  public
-  def width
-    @Width
   end
 
   public
-  def height
-    @Height
-  end
 
-  public
-	def add_life!(new_lifes)
-		lifes_remaining = new_lifes
-		new_universe = @universe
+  def add_life!(new_lifes)
+    lifes_remaining = new_lifes
+    new_universe = @universe
 
-		loop do
-			if lifes_remaining == 0
-				break
-			end
+    loop do
+      break if lifes_remaining == 0
 
-			x = rand(@Width)
-			y = rand(@Height)
+      x = rand(@width)
+      y = rand(@height)
 
-			if @universe[y][x] == true
+      if @universe[y][x] == true
         next
       else
         new_universe[y][x] = true
@@ -66,13 +58,13 @@ class World
 
     if x == 0
       relative_xs.shift
-    elsif x == @Width - 1
+    elsif x == @width - 1
       relative_xs.pop
     end
 
     if y == 0
       relative_ys.shift
-    elsif y == @Height - 1
+    elsif y == @height - 1
       relative_ys.pop
     end
 
@@ -83,28 +75,49 @@ class World
         end
       end
     end
-    live_neighbours -= 1 if @universe[y][x] == true #account for origin cell
+    live_neighbours -= 1 if @universe[y][x] == true # Account for origin cell
 
     return live_neighbours
   end
 
   public
-  def get_next_generation!
-    new_universe = Array.new(@Height) { Array.new(@Width, false) }
 
-    (0...@Height).each do |y|
-      (0...@Width).each do |x|
-        new_universe[y][x] = true if count_live_neighbours(x, y) == 3
+  def total_live_cells
+    @universe.map { |row| row.count(true) }.reduce(:+)
+  end
+
+  def every_cell(&block)
+    (0...@width).each do |y|
+      (0...@height).each do |x|
+        yield(x, y)
+      end
+    end
+  end
+
+
+  def get_next_generation!
+    new_universe = Array.new(@height) { Array.new(@width, false) }
+
+    (0...@height).each do |y|
+      (0...@width).each do |x|
+        case count_live_neighbours(x, y)
+          when 2
+            new_universe[y][x] = @universe[y][x] # Stay alive
+          when 3
+            new_universe[y][x] = true # Come to life
+          else
+            new_universe[y][x] = false # Die of loneliness/overcrowding
+        end
+
       end
     end
 
     @universe = new_universe
   end
 
-  public
   def show #This might get deleted, since we're using a GUI
-    (0...@Height).each do |y|
-      (0...@Width).each do |x|
+    (0...@height).each do |y|
+      (0...@width).each do |x|
 
         case @universe[y][x]
         when true
