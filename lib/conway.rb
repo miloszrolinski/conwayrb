@@ -17,119 +17,125 @@
 # (adding life/calculating neighbors & survival). Cells are represented
 # as a 2D array of boolean values (true = alive/ false = dead)
 class Game
-  attr_reader :width, :height
-  attr_accessor :universe
-
-  def initialize(width, height, live_cells)
-    @width = width
-    @height = height
-    @universe = Array.new(@height) { Array.new(@width, false) }
-    add_life!(live_cells)
+  attr_accessor :cells
+  def initialize(size)
+    # No error checking - it's already in Cells.new
+    @cells = Cells.new(size)
   end
 
   public
 
-  def add_life!(new_lifes)
-    lifes_remaining = new_lifes
-    new_universe = @universe
+  def next_generation!
+    @cells.proceed!
+  end
+end # End of class Game
 
-    loop do
-      break if lifes_remaining == 0
+# 2D array of cells of predetermined size
+# with methods for manipulation/getting stats.
+class Cells
+  attr_reader :size
 
-      x = rand(@width)
-      y = rand(@height)
-
-      if @universe[y][x] == true
-        next
-      else
-        new_universe[y][x] = true
-        lifes_remaining -= 1
-      end
+  def initialize(size)
+    if size < 0
+      fail(ArgumentError, 'Cells.new -> size cannot be negative!')
+    elsif !size.is_a?(Fixnum)
+      fail(ArgumentError, 'Cells.new -> size has to be numeric!')
     end
 
-    @universe = new_universe
+    @size = size
+
+    @array = Array.new(size) { Array.new(size, false) }
   end
 
-  private
-  def count_live_neighbours(x, y)
-    relative_xs = [-1, 0, 1]
-    relative_ys = [-1, 0, 1]
+  def alive?(x, y)
+    @array[y][x]
+  end
+
+  def add_life!(new_live_cells)
+    remaining_cells = new_live_cells
+
+    while remaining_cells > 0
+      x = rand(@size)
+      y = rand(@size)
+
+      unless alive?(x, y)
+        @array[y][x] = true
+        remaining_cells -= 1
+      end
+    end
+  end
+
+  def total_lives
+    @array.flatten.count(true)
+  end
+  
+  def live_neighbours(x, y)
+    neighbours = Neighbours.all(x, y, @size)
     live_neighbours = 0
 
-    if x == 0
-      relative_xs.shift
-    elsif x == @width - 1
-      relative_xs.pop
+    neighbours.each do |rel_x, rel_y|
+      live_neighbours += 1 if alive?(x + rel_x, y + rel_y)
     end
 
-    if y == 0
-      relative_ys.shift
-    elsif y == @height - 1
-      relative_ys.pop
-    end
-
-    relative_ys.each do |relative_y|
-      relative_xs.each do |relative_x|
-        if @universe[y + relative_y][x + relative_x] == true
-          live_neighbours += 1
-        end
-      end
-    end
-    live_neighbours -= 1 if @universe[y][x] == true # Account for origin cell
-
-    return live_neighbours
+    live_neighbours
   end
 
-  public
+  def proceed!
+    new_array = Array.new(@size) { Array.new(@size, false) }
 
-  def total_live_cells
-    @universe.map { |row| row.count(true) }.reduce(:+)
+    every_cell { |x, y| new_array[y][x] = (live_neighbours(x, y) == 3) }
+    @array = new_array
   end
 
-  def every_cell(&block)
-    (0...@width).each do |y|
-      (0...@height).each do |x|
+  def every_cell
+    (0...@size).each do |y|
+      (0...@size).each do |x|
         yield(x, y)
       end
     end
   end
+end # End of class Cells
 
+# This is for managing offsets, so mainly class methods inside
+class Neighbours
+  def self.all(x, y, limit)
+    neighbours = []
+    neighbours.push(*diagonal(x, y, limit))
+    neighbours.push(*vertical(y, limit))
+    neighbours.push(*horizontal(x, limit))
 
-  def get_next_generation!
-    new_universe = Array.new(@height) { Array.new(@width, false) }
+    neighbours
+  end
 
-    (0...@height).each do |y|
-      (0...@width).each do |x|
-        case count_live_neighbours(x, y)
-          when 2
-            new_universe[y][x] = @universe[y][x] # Stay alive
-          when 3
-            new_universe[y][x] = true # Come to life
-          else
-            new_universe[y][x] = false # Die of loneliness/overcrowding
-        end
+  def self.horizontal(x, limit)
+    x_range = limits(x, limit)
+    x_range.size == 2 ? x_range.zip([0, 0]) : [[x_range[0], 0]]
+  end
 
+  def self.vertical(y, limit)
+    y_range = limits(y, limit)
+    y_range.size == 2 ? [0, 0].zip(y_range) : [[0, y_range[0]]]
+  end
+  
+  def self.diagonal(x, y, limit)
+    x_range = horizontal(x, limit)
+    y_range = vertical(y, limit)
+    diag_range = []
+
+    x_range.each do |x_off, _x|
+      y_range.each do |_y, y_off|
+        diag_range << [x_off, y_off]
       end
     end
 
-    @universe = new_universe
+    diag_range
   end
 
-  def show #This might get deleted, since we're using a GUI
-    (0...@height).each do |y|
-      (0...@width).each do |x|
+  def self.limits(value, max)
+    max_values = []
+    max_values << -1 unless value == 0
+    max_values << 1 unless value == max - 1
 
-        case @universe[y][x]
-        when true
-          print "@ "
-        when false
-          print "+ "
-        end
-
-      end
-      puts # Separate rows
-    end
-
+    max_values
   end
-
-end # End of class World
+end

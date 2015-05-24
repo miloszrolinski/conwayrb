@@ -23,7 +23,7 @@ require 'gtk3'
 Gtk.init
 # No documentation for now
 class ProgramWindow < Gtk::Window
-  def initialize(related_world)
+  def initialize(game)
     super()
 
     self.title = "Conway's game of life"
@@ -39,7 +39,7 @@ class ProgramWindow < Gtk::Window
                                      parent_directory + '/assets/cross.png')
 
     # Save the world ;)
-    @world = related_world
+    @game = game
 
     set_up_gui
     set_up_callbacks
@@ -54,7 +54,7 @@ class ProgramWindow < Gtk::Window
     @cell_grid = get_new_cell_grid
     @cell_alignment = Gtk::Alignment.new(0.5, 0.5, 0, 0)
 
-    x, y = @world.width, @world.height
+    x, y = @game.cells.size, @game.cells.size
 
     @button_next_gen = Gtk::Button.new(label: "Next generation")
     @button_next_gen.expand = true
@@ -74,7 +74,7 @@ class ProgramWindow < Gtk::Window
     signal_connect('destroy') { Gtk.main_quit }
 
     @button_next_gen.signal_connect('clicked') do
-      @world.get_next_generation!
+      @game.next_generation!
       @cell_grid.destroy
       @cell_grid = get_new_cell_grid
       @cell_grid.show_all
@@ -85,22 +85,21 @@ class ProgramWindow < Gtk::Window
 
   def get_new_cell_grid
     new_cell_grid = Gtk::Grid.new
-
-    (0...@world.height).each do |y|
-      (0...@world.width).each do |x|
-        cell_pixbuf = @world.universe[y][x] ? @IMG_CELL_ALIVE : @IMG_CELL_DEAD
-        cell = Gtk::Image.new(pixbuf: cell_pixbuf)
-        new_cell_grid.attach(cell, x, y, 1, 1)
-      end
+    
+    @game.cells.every_cell do |x, y|
+      cell_pixbuf = @game.cells.alive?(x, y) ? @IMG_CELL_ALIVE : @IMG_CELL_DEAD
+      cell = Gtk::Image.new(pixbuf: cell_pixbuf)
+      new_cell_grid.attach(cell, x, y, 1, 1)
     end
 
-    return new_cell_grid
+     new_cell_grid
   end
 
 end # End of class ProgramWindow
 
-program_world = World::new(5, 5, 8)
+game = Game::new(5)
+game.cells.add_life!(8)
 
-program_gui = ProgramWindow.new(program_world)
+program_gui = ProgramWindow.new(game)
 
 Gtk.main
