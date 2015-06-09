@@ -17,21 +17,31 @@
 
 #   This is an implementation of Conway's Game of Life
 
-require_relative './conway.rb'
+require_relative 'game.rb'
 require 'gtk3'
 
 Gtk.init
+
 # No documentation for now
 class ProgramWindow < Gtk::Window
+  # Set global image objects for each cell type (alive/dead)
+  parent_directory = File.expand_path('..', File.dirname(__FILE__))
+  @IMG_CELL_ALIVE = Gdk::Pixbuf.new(file:
+                                    parent_directory + '/assets/circle.png')
+
+  @IMG_CELL_DEAD = Gdk::Pixbuf.new(file:
+                                   parent_directory + '/assets/cross.png')
+
   def initialize(game)
     super()
 
-    self.title = "Conway's game of life"
-    set_size_request(300, 300)
+    self.title = 'Conway\'s game of life'
+    # Not reallt needed, since set_resizable invalidates it
+    # set_size_request(300, 300)
     set_resizable(false)
 
     # Set global image objects for each cell type (alive/dead)
-    parent_directory = File.expand_path("..", File.dirname(__FILE__))
+    parent_directory = File.expand_path('..', File.dirname(__FILE__))
     @IMG_CELL_ALIVE = Gdk::Pixbuf.new(file:
                                       parent_directory + '/assets/circle.png')
 
@@ -56,14 +66,22 @@ class ProgramWindow < Gtk::Window
 
     x, y = @game.cells.size, @game.cells.size
 
-    @button_next_gen = Gtk::Button.new(label: "Next generation")
+    @button_next_gen = Gtk::Button.new(label: 'Next generation')
     @button_next_gen.expand = true
+
+    @button_reset = Gtk::Button.new(label: 'Reset game')
+    @button_reset.expand = true
+
+    @button_loop = Gtk::Button.new(label: 'Run in loop')
+    @button_loop.expand = true
 
     # We should center the cell_grid
     @cell_alignment << @cell_grid
 
     layout_grid.attach(@cell_alignment, 0, 0, x, y)
-    layout_grid.attach(@button_next_gen, 0, y, x, 1)
+    layout_grid.attach(@button_next_gen, 0, y, x - 1, 1)
+    layout_grid.attach(@button_reset, x - 1, y, 1, 1)
+    layout_grid.attach(@button_loop, 0, y + 1, x, 1)
 
     layout_grid.expand = true
     add(layout_grid)
@@ -74,13 +92,23 @@ class ProgramWindow < Gtk::Window
     signal_connect('destroy') { Gtk.main_quit }
 
     @button_next_gen.signal_connect('clicked') do
-      @game.next_generation!
+      @game.next_generation! # Could be moved to a named method
       @cell_grid.destroy
       @cell_grid = get_new_cell_grid
       @cell_grid.show_all
       @cell_alignment << @cell_grid
+      @button_next_gen.set_sensitive(false) if @game.cells.total_lives == 0
     end
 
+    @button_reset.signal_connect('clicked') do
+      @game.reset! # Could be moved to a named method
+      @game.cells.add_life!(8)
+      @cell_grid.destroy
+      @cell_grid = get_new_cell_grid
+      @cell_grid.show_all
+      @cell_alignment << @cell_grid
+      @button_next_gen.set_sensitive(true)
+    end
   end
 
   def get_new_cell_grid
@@ -97,9 +125,9 @@ class ProgramWindow < Gtk::Window
 
 end # End of class ProgramWindow
 
-game = Game::new(5)
-game.cells.add_life!(8)
+game = Conway::Game.new(15)
+game.cells.add_life!(80)
 
-program_gui = ProgramWindow.new(game)
+ProgramWindow.new(game)
 
 Gtk.main
