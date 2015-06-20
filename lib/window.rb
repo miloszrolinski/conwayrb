@@ -40,6 +40,7 @@ module Conway
                                                        @default_live_cells)
 
         @controls = Conway::Interface::Controls.new
+        @controls.disable([:stop])
 
         @main_vbox.pack_start(@cell_table)
         @main_vbox.pack_start(@controls)
@@ -54,15 +55,19 @@ module Conway
 
         @controls.access[:next_gen].signal_connect('clicked') do
            update_cell_table!
+           @controls.disable([:next_gen, :loop, :stop]) if @cell_table.empty?
         end
 
         @controls.access[:loop].signal_connect('clicked') do
+          @controls.disable([:loop, :reset, :next_gen])
+          @controls.enable([:stop])
           @loop_id = GLib::Timeout.add_seconds(@refresh_speed) do
                       update_cell_table!
 
                       @cell_table.game.cells.total_lives > 0 
                       if @cell_table.empty?
                         @controls.disable([:next_gen, :loop, :stop])
+                        @controls.enable([:reset])
                         false
                       else
                         true
@@ -72,12 +77,19 @@ module Conway
 
         @controls.access[:stop].signal_connect('clicked') do
           GLib::Source.remove(@loop_id)
+          @controls.enable([:reset])
+          @controls.enable([:next_gen, :loop]) unless @cell_table.empty?
+      
+          @controls.disable([:stop])
         end
 
         @controls.access[:reset].signal_connect('clicked') do
           @cell_table.destroy
           @cell_table = Conway::Interface::CellTable.new(@edge_size,
                                                          @default_live_cells)
+
+          @controls.enable([:next_gen, :loop, :reset, :stop])
+          @controls.disable([:stop])
 
           @main_vbox.pack_start(@cell_table)
           @main_vbox.reorder_child(@cell_table, Gtk::PackType::START)
