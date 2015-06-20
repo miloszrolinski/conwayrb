@@ -36,9 +36,10 @@ module Conway
 
       def set_layout
         @main_vbox = Gtk::Box.new(:vertical)
-        @cell_table = CellTable.new(@edge_size, @default_live_cells)
+        @cell_table = Conway::Interface::CellTable.new(@edge_size,
+                                                       @default_live_cells)
 
-        @controls = Controls.new
+        @controls = Conway::Interface::Controls.new
 
         @main_vbox.pack_start(@cell_table)
         @main_vbox.pack_start(@controls)
@@ -69,7 +70,8 @@ module Conway
 
         @controls.access[:reset].signal_connect('clicked') do
           @cell_table.destroy
-          @cell_table = CellTable.new(@edge_size, @default_live_cells)
+          @cell_table = Conway::Interface::CellTable.new(@edge_size,
+                                                         @default_live_cells)
 
           @main_vbox.pack_start(@cell_table)
           @main_vbox.reorder_child(@cell_table, Gtk::PackType::START)
@@ -81,77 +83,14 @@ module Conway
         game = @cell_table.game
 
         @cell_table.destroy
-        @cell_table = CellTable.new(@edge_size, @default_live_cells)
+        @cell_table = Conway::Interface::CellTable.new(@edge_size,
+                                                       @default_live_cells)
         @cell_table.restart_game!(game)
         @main_vbox.pack_start(@cell_table)
         @main_vbox.reorder_child(@cell_table, Gtk::PackType::START)
       end
 
     end # ... of class MainWindow
-
-    class CellTable < Gtk::Table
-      attr_reader :game
-      def initialize(edge_size, initial_live_cells)
-        super(edge_size, edge_size)
-
-        @game = Conway::Game.new(edge_size)
-        @game.cells.add_life!(initial_live_cells)
-        
-        parent_directory = File.expand_path('..', File.dirname(__FILE__))
-        @img_alive = Gdk::Pixbuf.new(file:
-                                     parent_directory + '/assets/circle.png')
-
-        @img_dead = Gdk::Pixbuf.new(file:
-                                    parent_directory + '/assets/cross.png')
-
-        populate! 
-      end
-   
-      def populate!
-        @game.cells.every_cell do |x, y|
-          cell_pixbuf = @game.cells.alive?(x, y) ? @img_alive : @img_dead
-
-          cell_img = Gtk::Image.new(pixbuf: cell_pixbuf)
-          attach(cell_img, x, x + 1, y, y + 1)
-        end
-        show_all
-      end
-
-      def restart_game!(game)
-        children.each { |child| child.destroy }
-
-        @game = game
-        populate!
-      end
-
-    end # ... of class CellTable
-
-    class Controls < Gtk::Box
-      attr_reader :buttons
-      alias :access :buttons
-
-      def initialize
-        super(:vertical)
-
-        @buttons = {}
-
-        pack_start(create_control('Next generation', :next_gen))
-        @loop_ctrls_hbox = Gtk::Box.new(:horizontal)
-        @loop_ctrls_hbox.pack_start(create_control('Run in loop', :loop))
-        @loop_ctrls_hbox.pack_start(create_control('Stop', :stop))
-        @loop_ctrls_hbox.pack_start(create_control('Reset', :reset))
-        pack_start(@loop_ctrls_hbox)
-
-      end
-      
-      def create_control(label, symbol)
-        button = Gtk::Button.new(label: label)
-        @buttons[symbol] = button
-
-        button
-      end
-
-    end # ... of class Controls
 
   end # ... of module Interface
 end # ... of module Conway
