@@ -61,6 +61,12 @@ module Conway
                       update_cell_table!
 
                       @cell_table.game.cells.total_lives > 0 
+                      if @cell_table.empty?
+                        @controls.disable([:next_gen, :loop, :stop])
+                        false
+                      else
+                        true
+                      end
                     end
         end
 
