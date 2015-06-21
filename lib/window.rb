@@ -36,6 +36,7 @@ module Conway
 
       def set_layout
         @main_vbox = Gtk::Box.new(:vertical)
+        @main_vbox.spacing = 5
         @cell_table = Conway::Interface::CellTable.new(@edge_size,
                                                        @default_live_cells)
 
