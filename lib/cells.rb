@@ -36,6 +36,9 @@ module Conway
     end
 
     def add_life!(new_live_cells)
+      if new_live_cells + self.total_lives > size**2
+        raise(ArgumentError, 'Cannot add that many lives')
+      end
       remaining_cells = new_live_cells
 
       while remaining_cells > 0

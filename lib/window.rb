@@ -20,7 +20,7 @@ module Conway
       def initialize(edge_size = 4, initial_live_cells = 9, refresh_speed = 1)
         super('Conway\'s game of life')
         
-        set_size_request(300, 300) 
+        set_size_request(300, 400) 
         self.resizable = false
         
         @edge_size = edge_size
@@ -44,7 +44,7 @@ module Conway
         @controls.disable([:stop])
 
         @main_vbox.pack_start(@cell_table)
-        @main_vbox.pack_start(@controls)
+        @main_vbox.pack_start(@controls, expand: false)
 
         status_bar = Gtk::Statusbar.new
         context = status_bar.get_context_id('Values')
@@ -53,7 +53,7 @@ module Conway
                         "Initial live cells: #{@default_live_cells}\t"+
                         "Refresh speed: #{@refresh_speed} generations/sec")
 
-        @main_vbox.pack_start(status_bar)
+        @main_vbox.pack_start(status_bar, expand: false)
 
         add(@main_vbox)
       end
