@@ -71,7 +71,7 @@ module Conway
         @controls.access[:loop].signal_connect('clicked') do
           @controls.disable([:loop, :reset, :next_gen])
           @controls.enable([:stop])
-          @loop_id = GLib::Timeout.add_seconds(@refresh_speed) do
+          @loop_id = GLib::Timeout.add((1000/@refresh_speed).floor) do
                       update_cell_table!
 
                       @cell_table.game.cells.total_lives > 0 
