@@ -18,7 +18,6 @@
 #   This is an implementation of Conway's Game of Life
 
 require_relative './deps.rb'
-require_relative './settings.rb'
 
 Gtk.init
 Conway::Interface::Settings.new
