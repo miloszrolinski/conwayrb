@@ -40,7 +40,7 @@ module Conway
 
       end
 
-      def value?
+      def value
         if @toggle.active?
           rand(7) + 3
         else

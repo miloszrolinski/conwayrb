@@ -55,9 +55,9 @@ module Conway
         
 
       def produce_main_window!
-        Conway::Interface::MainWindow.new(@option_edge_size.value?,
-                                          @option_initial_lives.value?,
-                                          @option_refresh_speed.value? )
+        Conway::Interface::MainWindow.new(@option_edge_size.value,
+                                          @option_initial_lives.value,
+                                          @option_refresh_speed.value )
       end
         
     end # ... of class Settings
