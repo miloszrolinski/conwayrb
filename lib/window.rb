@@ -46,6 +46,15 @@ module Conway
         @main_vbox.pack_start(@cell_table)
         @main_vbox.pack_start(@controls)
 
+        status_bar = Gtk::Statusbar.new
+        context = status_bar.get_context_id('Values')
+        status_bar.push(context, 
+                        "Edge size: #{@edge_size}\t"+
+                        "Initial live cells: #{@default_live_cells}\t"+
+                        "Refresh speed: #{@refresh_speed} generations/sec")
+
+        @main_vbox.pack_start(status_bar)
+
         add(@main_vbox)
       end
 
