@@ -73,10 +73,10 @@ module Conway
         
 
       def produce_main_window!
-        edge_size = @toggle_random_edge_size ? rand(7) + 3 : 
+        edge_size = @toggle_random_edge_size.active? ? rand(7) + 3 : 
                                                @entry_edge_size.text.to_i
 
-        initial_lives = @toggle_random_initial_lives ? rand(7) + 3 : 
+        initial_lives = @toggle_random_initial_lives.active? ? rand(7) + 3 : 
                                                @entry_initial_lives.text.to_i
 
         Conway::Interface::MainWindow.new(edge_size,
