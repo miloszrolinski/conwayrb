@@ -15,52 +15,6 @@
 
 module Conway
   module Interface
-  
-    class Settings < Gtk::Window
-      def initialize(edge_size_default = 3, initial_lives_default = 5,
-                     refresh_speed_default = 1)
-        super('Settings')
-        
-        self.resizable = false
-        set_size_request(300, 150)
-        @main_vbox = Gtk::Box.new(:vertical)
-
-        @option_edge_size = Conway::Interface::Option.new('Edge size')
-        @option_edge_size.value = edge_size_default
-        @option_initial_lives = Conway::Interface::Option.new('Initial lives')
-        @option_initial_lives.value = initial_lives_default
-        @option_refresh_speed = Conway::Interface::Option.new('Refresh speed',
-                                                              false, 'gen/sec')
-        @option_refresh_speed.value = refresh_speed_default
-
-        @main_vbox.pack_start(@option_edge_size)
-        @main_vbox.pack_start(@option_initial_lives)
-        @main_vbox.pack_start(@option_refresh_speed)
-
-        @button_save = Gtk::Button.new(label: 'Save')
-        @main_vbox.add(@button_save)
-        
-        add(@main_vbox)
-        signal_connect('delete_event') do
-          produce_main_window!
-          self.destroy
-        end
-
-        @button_save.signal_connect('clicked') do
-          produce_main_window!
-          self.destroy
-        end
-        show_all
-      end
-        
-
-      def produce_main_window!
-        Conway::Interface::MainWindow.new(@option_edge_size.value?,
-                                          @option_initial_lives.value?,
-                                          @option_refresh_speed.value? )
-      end
-        
-    end # ... of class Settings
 
     class Option < Gtk::Box
       def initialize(name, with_random = true, desc = nil)
