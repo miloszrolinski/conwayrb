@@ -19,9 +19,9 @@ module Conway
     class MainWindow < Gtk::Window
       def initialize(edge_size = 4, initial_live_cells = 9, refresh_speed = 1)
         super('Conway\'s game of life')
-
+        
         set_size_request(300, 300) 
-        set_resizable(false)
+        self.resizable = false
         
         @edge_size = edge_size
         @default_live_cells = initial_live_cells
