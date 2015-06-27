@@ -42,8 +42,7 @@ module Conway
         
         add(@main_vbox)
         signal_connect('delete_event') do
-          produce_main_window!
-          self.destroy
+          Gtk.main_quit
         end
 
         @button_save.signal_connect('clicked') do
