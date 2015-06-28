@@ -28,7 +28,7 @@ module Conway
         @game = Conway::Game.new(edge_size)
         @game.cells.add_life!(initial_live_cells)
         
-        parent_directory = File.expand_path('..', File.dirname(__FILE__))
+        parent_directory = File.expand_path('../..', File.dirname(__FILE__))
         @img_alive = Gdk::Pixbuf.new(file:
                                      parent_directory + '/assets/circle.png')
 
