@@ -16,7 +16,10 @@
 
 module Conway
   module Interface
-
+    
+    # CellTable is the graphical representation of the 'Cells' object
+    # Holds the images for each type of cell (dead/alive), returns an 
+    # item that can be placed in a GTK window for showing.
     class CellTable < Gtk::Table
       attr_reader :game
       def initialize(edge_size, initial_live_cells)
@@ -48,7 +51,7 @@ module Conway
       def restart_game!(game)
         children.each { |child| child.destroy }
 
-        @game = game
+        @game.reset!
         populate!
       end
 

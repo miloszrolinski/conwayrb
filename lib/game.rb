@@ -14,11 +14,9 @@
 #    along with conwayrb.  If not, see <http://www.gnu.org/licenses/>.
 
 module Conway
-  # Basically a front-end for the Cells class. Encapsulates the functionality
-  # in a "black box" of sorts
+
+  # Encapsulates the 'Cells' class to expose as little details as necessary
   class Game
-    # Basically a front-end for the Cells class. Encapsulates the functionality
-    # in a "black box" of sorts
     attr_accessor :cells
     def initialize(size)
       # No error checking - it's already in Cells.new
