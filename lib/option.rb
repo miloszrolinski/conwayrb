@@ -19,7 +19,7 @@ module Conway
     # A horizontal box that holds a single line of initial settings.
     # Includes a name of the property, input box and a checkbox to allow
     # for random values. The last one can be disabled and replaced with a 
-    # longer description of the input value.
+    # longer description of the input value (to explain the units for example).
     class Option < Gtk::Box
       def initialize(name, with_random = true, desc = nil)
         super(:horizontal)

@@ -16,6 +16,9 @@
 module Conway
   module Interface
 
+    # Controls class holds the buttons. It does not contain the callbacks 
+    # (handled in 'MainWindow'), just the layout and a way to manipulate the 
+    # buttons (access the objects, disable/enable the buttons).
     class Controls < Gtk::Box
       attr_reader :buttons
       alias :access :buttons
