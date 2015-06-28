@@ -14,8 +14,15 @@
 #    along with conwayrb.  If not, see <http://www.gnu.org/licenses/>.
 
 module Conway
-  # 2D array of cells of predetermined size with methods for manipulation
-  # and getting stats.
+
+  # Cells class holds the implementation details of the game.
+  # The constructor creates an empty(!) square table holding the cells,
+  # each being either alive or dead. 
+  # Manages counting the live neighbours or total cells alive as well as
+  # re-populating the table based on whether the cells should stay alive, come 
+  # to life or die.
+  # Contains convenience methods for checking cell's status and looping through 
+  # the whole table and running a lambda over each cell.
   class Cells
     attr_reader :size
 
@@ -30,7 +37,7 @@ module Conway
 
       @array = Array.new(size) { Array.new(size, false) }
     end
-
+    
     def alive?(x, y)
       @array[y][x]
     end
@@ -80,17 +87,19 @@ module Conway
 
       @array = new_array
     end
-
+    
+    # Accepts a block, which can use the |x, y| coordinates of the cell
     def every_cell
       (0...@size).each do |y|
         (0...@size).each do |x|
-          yield(x, y)
+          yield(x, y) if block_given?
         end
       end
     end
   end # End of class Cells
 
-  # This is for managing offsets, so mainly class methods inside
+  # Neighbours class manages providing the (relative) coordinates of a cell's
+  # neighbours. 
   class Neighbours
     def self.all(x, y, limit)
       neighbours = []
