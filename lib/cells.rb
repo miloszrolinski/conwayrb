@@ -96,7 +96,7 @@ module Conway
         end
       end
     end
-  end # End of class Cells
+  end # ... of class Cells
 
   # Neighbours class manages providing the (relative) coordinates of a cell's
   # neighbours. 
