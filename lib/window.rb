@@ -16,6 +16,8 @@
 module Conway
   module Interface
 
+    # MainWindow holds the program GUI representation, which includes the 
+    # hard-coded layout and callbacks.
     class MainWindow < Gtk::Window
       def initialize(edge_size = 4, initial_live_cells = 9, refresh_speed = 1)
         super('Conway\'s game of life')

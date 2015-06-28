@@ -15,7 +15,11 @@
 
 module Conway
   module Interface
-  
+
+    # Holds the window that is displayed before the program proper is being run 
+    # A smaller 'sibling' of the main window, holds it's own layout and 
+    # callbacks. Kills the whole program when destroyed or destroys itself and 
+    # starts the main window when 'OK' is pressed.
     class Settings < Gtk::Window
       def initialize(edge_size_default = 3, initial_lives_default = 5,
                      refresh_speed_default = 1)
