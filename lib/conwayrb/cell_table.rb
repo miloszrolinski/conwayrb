@@ -40,11 +40,12 @@ module Conway
    
       def populate!
         @game.cells.every_cell do |x, y|
-          cell_pixbuf = @game.cells.alive?(x, y) ? @img_alive : @img_dead
-
-          cell_img = Gtk::Image.new(pixbuf: cell_pixbuf)
-          cell_button = Gtk::Button.new()
-          cell_button.add(cell_img)
+          cell_button = Conway::Interface::Cell.new(@game.cells.alive?(x, y))
+          
+          cell_button.signal_connect('clicked') do
+            @game.cells.toggle(x, y)
+            cell_button.update(@game.cells.alive?(x, y))
+          end
             
           attach(cell_button, x, x + 1, y, y + 1)
         end
