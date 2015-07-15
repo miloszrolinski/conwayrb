@@ -33,12 +33,14 @@ GEM
       cairo (>= 1.14.0)
       glib2 (= 2.2.5)
     pkg-config (1.1.6)
+    rake (10.4.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   gtk3 (>= 2.2.5)
+  rake
 
 BUNDLED WITH
    1.10.5
