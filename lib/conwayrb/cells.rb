@@ -83,7 +83,7 @@ module Conway
 
       every_cell do |x, y| 
         if alive?(x, y)
-          new_array[x][y] = (2..3).include? live_neighbours(x, y)
+          new_array[y][x] = (2..3).include? live_neighbours(x, y)
         else
           new_array[y][x] = (live_neighbours(x, y) == 3)
         end
