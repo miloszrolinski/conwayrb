@@ -43,15 +43,23 @@ module Conway
           cell_pixbuf = @game.cells.alive?(x, y) ? @img_alive : @img_dead
 
           cell_img = Gtk::Image.new(pixbuf: cell_pixbuf)
-          attach(cell_img, x, x + 1, y, y + 1)
+          cell_button = Gtk::Button.new()
+          cell_button.add(cell_img)
+            
+          attach(cell_button, x, x + 1, y, y + 1)
         end
         show_all
       end
 
-      def restart_game!(game)
+      def restart_game!(game = nil)
         children.each { |child| child.destroy }
 
-        @game.reset!
+        if game == nil
+          @game.reset!
+        else
+          @game = game
+        end
+
         populate!
       end
 
