@@ -42,6 +42,10 @@ module Conway
       @array[y][x]
     end
 
+    def toggle(x, y)
+      @array[y][x] = self.alive?(x, y) ? false : true
+    end
+
     def add_life!(new_live_cells)
       if new_live_cells + self.total_lives > size**2
         raise(ArgumentError, 'Cannot add that many lives')
