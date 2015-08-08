@@ -15,16 +15,16 @@
 
 module Conway
   module Interface
-    class Cell < Gtk::Button
+    class CellButton < Gtk::Button
       def initialize(is_alive)
         super()
 
         parent_directory = File.expand_path('../..', File.dirname(__FILE__))
         @img_alive = Gdk::Pixbuf.new(file:
-                                     parent_directory + '/assets/circle.png')
+                                     parent_directory + '/assets/circle_25px.png')
 
         @img_dead = Gdk::Pixbuf.new(file:
-                                    parent_directory + '/assets/cross.png')
+                                    parent_directory + '/assets/cross_25px.png')
 
         @is_alive = is_alive
         
@@ -47,6 +47,6 @@ module Conway
         @status_image.show
       end
         
-    end # ... of class Cell
+    end # ... of class CellButton
   end # ... of module Interface
 end # ... of module Conway

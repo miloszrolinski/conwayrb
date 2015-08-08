@@ -27,20 +27,13 @@ module Conway
 
         @game = Conway::Game.new(edge_size)
         @game.cells.add_life!(initial_live_cells)
-        
-        parent_directory = File.expand_path('../..', File.dirname(__FILE__))
-        @img_alive = Gdk::Pixbuf.new(file:
-                                     parent_directory + '/assets/circle.png')
-
-        @img_dead = Gdk::Pixbuf.new(file:
-                                    parent_directory + '/assets/cross.png')
 
         populate! 
       end
    
       def populate!
         @game.cells.every_cell do |x, y|
-          cell_button = Conway::Interface::Cell.new(@game.cells.alive?(x, y))
+          cell_button = Conway::Interface::CellButton.new(@game.cells.alive?(x, y))
           
           cell_button.signal_connect('clicked') do
             @game.cells.toggle(x, y)
