@@ -30,7 +30,7 @@ module Conway
     end
 
     def reset!
-      @cells = Conway::Cells.new(@cells.size)
+      @cells.reset!
     end
   end # ... of class Game
 end

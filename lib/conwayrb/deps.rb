@@ -1,9 +1,9 @@
 # External (gem) dependencies
 require 'gtk3'
 
-# Implementation 
+# Implementation
 require_relative './cells.rb'
-require_relative './game.rb'
+#require_relative './game.rb'
 
 # GUI
 require_relative './settings.rb'

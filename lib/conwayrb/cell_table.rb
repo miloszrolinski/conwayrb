@@ -16,30 +16,31 @@
 
 module Conway
   module Interface
-    
+
     # CellTable is the graphical representation of the 'Cells' object
-    # Holds the images for each type of cell (dead/alive), returns an 
+    # Holds the images for each type of cell (dead/alive), returns an
     # item that can be placed in a GTK window for showing.
     class CellTable < Gtk::Table
-      attr_reader :game
+      attr_reader :cells
       def initialize(edge_size, initial_live_cells)
         super(edge_size, edge_size)
 
-        @game = Conway::Game.new(edge_size)
-        @game.cells.add_life!(initial_live_cells)
+        @cells = Conway::Cells.new(edge_size)
+        @cells.add_life!(initial_live_cells)
+        @starting_lives = initial_live_cells
 
-        populate! 
+        populate!
       end
-   
+
       def populate!
-        @game.cells.every_cell do |x, y|
-          cell_button = Conway::Interface::CellButton.new(@game.cells.alive?(x, y))
-          
+        @cells.every_cell do |x, y|
+          cell_button = Conway::Interface::CellButton.new(@cells.alive?(x, y))
+
           cell_button.signal_connect('clicked') do
-            @game.cells.toggle(x, y)
-            cell_button.update(@game.cells.alive?(x, y))
+            @cells.toggle(x, y)
+            cell_button.update(@cells.alive?(x, y))
           end
-            
+
           attach(cell_button, x, x + 1, y, y + 1)
         end
         show_all
@@ -47,18 +48,19 @@ module Conway
 
       def restart_game!(game = nil)
         children.each { |child| child.destroy }
-
         if game == nil
-          @game.reset!
+          size = @cells.size
+          @cells = Conway::Cells.new(size)
+          @cells.add_life!(@starting_lives)
         else
-          @game = game
+          @cells= game
         end
 
         populate!
       end
 
       def empty?
-        @game.cells.total_lives == 0
+        @cells.total_lives == 0
       end
 
     end # ... of class CellTable

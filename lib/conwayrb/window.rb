@@ -16,22 +16,22 @@
 module Conway
   module Interface
 
-    # MainWindow holds the program GUI representation, which includes the 
+    # MainWindow holds the program GUI representation, which includes the
     # hard-coded layout and callbacks.
     class MainWindow < Gtk::Window
       def initialize(edge_size = 4, initial_live_cells = 9, refresh_speed = 1)
         super('Conway\'s game of life')
-        
-        set_size_request(300, 400) 
+
+        set_size_request(300, 400)
         self.resizable = false
-        
+
         @edge_size = edge_size
         @default_live_cells = initial_live_cells
         @refresh_speed = refresh_speed
         @loop_id = nil
-        
+
         set_layout
-        set_callbacks  
+        set_callbacks
 
         show_all
       end
@@ -50,7 +50,7 @@ module Conway
 
         status_bar = Gtk::Statusbar.new
         context = status_bar.get_context_id('Values')
-        status_bar.push(context, 
+        status_bar.push(context,
                         "Edge size: #{@edge_size}\t"+
                         "Initial live cells: #{@default_live_cells}\t"+
                         "Refresh speed: #{@refresh_speed} generations/sec")
@@ -76,7 +76,7 @@ module Conway
           @loop_id = GLib::Timeout.add((1000/@refresh_speed).floor) do
                       update_cell_table!
 
-                      @cell_table.game.cells.total_lives > 0 
+                      @cell_table.cells.total_lives > 0
                       if @cell_table.empty?
                         @controls.disable([:next_gen, :loop, :stop])
                         @controls.enable([:reset])
@@ -91,7 +91,7 @@ module Conway
           GLib::Source.remove(@loop_id)
           @controls.enable([:reset])
           @controls.enable([:next_gen, :loop]) unless @cell_table.empty?
-      
+
           @controls.disable([:stop])
         end
 
@@ -109,8 +109,8 @@ module Conway
       end
 
       def update_cell_table!
-        @cell_table.game.next_generation!
-        game = @cell_table.game
+        @cell_table.cells.proceed!
+        game = @cell_table.cells
 
         @cell_table.destroy
         @cell_table = Conway::Interface::CellTable.new(@edge_size,
