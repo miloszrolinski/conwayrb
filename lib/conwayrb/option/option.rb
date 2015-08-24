@@ -21,39 +21,35 @@ module Conway
     # for random values. The last one can be disabled and replaced with a 
     # longer description of the input value (to explain the units for example).
     class Option < Gtk::Box
-      def initialize(name, with_random = true, desc = nil)
+      def initialize(name, with_random, desc)
         super(:horizontal)
         label = Gtk::Label.new(name)
         label.width_chars = 15
         self.homogeneous = false
 
-        @entry = Gtk::Entry.new
-        @entry.max_length = 2
-        @entry.width_chars = 3
+        self.spacing = 5
 
-        pack_start(label)
-        pack_start(@entry, expand: false)
+        pack_start(label, expand: false)
+        pack_start(@option_value, expand: true)
 
-        if with_random
-          @toggle = Gtk::CheckButton.new('Random')
-        else
-          @toggle = Gtk::CheckButton.new(desc)
-          @toggle.sensitive = false
-        end
-          pack_start(@toggle)
+        unit = Gtk::Label.new(desc)
+        unit.width_chars = 8
+        pack_start(unit, expand: false)
+
+        @toggle = Gtk::CheckButton.new('Random')
+
+        @toggle.sensitive = false if not with_random
+
+        pack_start(@toggle, expand: false)
 
       end
 
       def value
-        if @toggle.active?
-          rand(7) + 3
-        else
-          @entry.text.to_i
-        end
+        raise NameError, "This is an abstract function. Override, don't call."
       end
 
       def value=(property_value)
-        @entry.text = property_value.to_s
+        raise NameError, "This is an abstract function. Override, don't call."
       end
 
     end # ... of class Option

@@ -29,17 +29,25 @@ module Conway
         set_size_request(300, 150)
         @main_vbox = Gtk::Box.new(:vertical)
 
-        @option_edge_size = Conway::Interface::Option.new('Edge size')
+        @option_edge_size = Conway::Interface::OptionEntry.new('Edge size',
+                                                               true,
+                                                               'squares')
         @option_edge_size.value = edge_size_default
-        @option_initial_lives = Conway::Interface::Option.new('Initial lives')
+        @option_initial_lives = Conway::Interface::OptionEntry.new('Initial lives',
+                                                                   true,
+                                                                   'live cells')
         @option_initial_lives.value = initial_lives_default
-        @option_refresh_speed = Conway::Interface::Option.new('Refresh speed',
+        @option_refresh_speed = Conway::Interface::OptionEntry.new('Refresh speed',
                                                               false, 'gen/sec')
         @option_refresh_speed.value = refresh_speed_default
+        @option_image_size = Conway::Interface::OptionCombo.new('Icon size',
+                                                                'pixels ',
+                                                                [25, 50])
 
         @main_vbox.pack_start(@option_edge_size)
         @main_vbox.pack_start(@option_initial_lives)
         @main_vbox.pack_start(@option_refresh_speed)
+        @main_vbox.pack_start(@option_image_size)
 
         @button_save = Gtk::Button.new(label: 'Save')
         @main_vbox.add(@button_save)
@@ -61,7 +69,7 @@ module Conway
         Conway::Interface::MainWindow.new(@option_edge_size.value,
                                           @option_initial_lives.value,
                                           @option_refresh_speed.value,
-                                          25 )
+                                          @option_image_size.value )
       end
 
     end # ... of class Settings
