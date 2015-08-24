@@ -3,7 +3,6 @@ require 'gtk3'
 
 # Implementation
 require_relative './cells.rb'
-#require_relative './game.rb'
 
 # GUI
 require_relative './settings.rb'
