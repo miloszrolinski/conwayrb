@@ -16,29 +16,31 @@
 module Conway
   module Interface
     class CellButton < Gtk::Button
-      def initialize(is_alive)
+      def initialize(is_alive, img_size)
         super()
 
         parent_directory = File.expand_path('../..', File.dirname(__FILE__))
         @img_alive = Gdk::Pixbuf.new(file:
-                                     parent_directory + '/assets/circle_25px.png')
+                                     parent_directory + '/assets/circle_' +
+                                     img_size.to_s + 'px.png')
 
         @img_dead = Gdk::Pixbuf.new(file:
-                                    parent_directory + '/assets/cross_25px.png')
+                                    parent_directory + '/assets/cross_' +
+                                    img_size.to_s + 'px.png')
 
         @is_alive = is_alive
-        
+
         @status_image = nil
         assign_status
-        
+
         add(@status_image)
       end
 
       def assign_status
-        @status_image = Gtk::Image.new(pixbuf: @is_alive ? @img_alive : 
+        @status_image = Gtk::Image.new(pixbuf: @is_alive ? @img_alive :
                                                            @img_dead)
       end
-        
+
       def update(new_state)
         @status_image.destroy
         @is_alive = @is_alive ? false : true
@@ -46,7 +48,7 @@ module Conway
         add(@status_image)
         @status_image.show
       end
-        
+
     end # ... of class CellButton
   end # ... of module Interface
 end # ... of module Conway

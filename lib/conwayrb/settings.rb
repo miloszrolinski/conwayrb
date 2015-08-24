@@ -16,15 +16,15 @@
 module Conway
   module Interface
 
-    # Holds the window that is displayed before the program proper is being run 
-    # A smaller 'sibling' of the main window, holds it's own layout and 
-    # callbacks. Kills the whole program when destroyed or destroys itself and 
+    # Holds the window that is displayed before the program proper is being run
+    # A smaller 'sibling' of the main window, holds it's own layout and
+    # callbacks. Kills the whole program when destroyed or destroys itself and
     # starts the main window when 'OK' is pressed.
     class Settings < Gtk::Window
       def initialize(edge_size_default = 3, initial_lives_default = 5,
                      refresh_speed_default = 1)
         super('Settings')
-        
+
         self.resizable = false
         set_size_request(300, 150)
         @main_vbox = Gtk::Box.new(:vertical)
@@ -43,7 +43,7 @@ module Conway
 
         @button_save = Gtk::Button.new(label: 'Save')
         @main_vbox.add(@button_save)
-        
+
         add(@main_vbox)
         signal_connect('delete_event') do
           Gtk.main_quit
@@ -55,14 +55,15 @@ module Conway
         end
         show_all
       end
-        
+
 
       def produce_main_window!
         Conway::Interface::MainWindow.new(@option_edge_size.value,
                                           @option_initial_lives.value,
-                                          @option_refresh_speed.value )
+                                          @option_refresh_speed.value,
+                                          25 )
       end
-        
+
     end # ... of class Settings
 
     class Option < Gtk::Box

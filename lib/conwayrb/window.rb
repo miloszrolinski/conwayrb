@@ -19,7 +19,7 @@ module Conway
     # MainWindow holds the program GUI representation, which includes the
     # hard-coded layout and callbacks.
     class MainWindow < Gtk::Window
-      def initialize(edge_size = 4, initial_live_cells = 9, refresh_speed = 1)
+      def initialize(edge_size, initial_live_cells, refresh_speed, img_size)
         super('Conway\'s game of life')
 
         set_size_request(300, 400)
@@ -29,6 +29,7 @@ module Conway
         @default_live_cells = initial_live_cells
         @refresh_speed = refresh_speed
         @loop_id = nil
+        @img_size = img_size
 
         set_layout
         set_callbacks
@@ -40,7 +41,8 @@ module Conway
         @main_vbox = Gtk::Box.new(:vertical)
         @main_vbox.spacing = 5
         @cell_table = Conway::Interface::CellTable.new(@edge_size,
-                                                       @default_live_cells)
+                                                       @default_live_cells,
+                                                       @img_size)
 
         @controls = Conway::Interface::Controls.new
         @controls.disable([:stop])
@@ -98,7 +100,8 @@ module Conway
         @controls.access[:reset].signal_connect('clicked') do
           @cell_table.destroy
           @cell_table = Conway::Interface::CellTable.new(@edge_size,
-                                                         @default_live_cells)
+                                                         @default_live_cells,
+                                                         @img_size)
 
           @controls.enable([:next_gen, :loop, :reset, :stop])
           @controls.disable([:stop])
@@ -114,7 +117,8 @@ module Conway
 
         @cell_table.destroy
         @cell_table = Conway::Interface::CellTable.new(@edge_size,
-                                                       @default_live_cells)
+                                                       @default_live_cells,
+                                                       @img_size)
         @cell_table.restart_game!(game)
         @main_vbox.pack_start(@cell_table)
         @main_vbox.reorder_child(@cell_table, Gtk::PackType::START)

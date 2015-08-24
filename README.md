@@ -22,7 +22,7 @@ Ideas for future versions
 1. Add more error checking
 	- Place the error checks in the GUI code (make it fail earlier)
 2. Make the game run with non-square tables
-3. Enable cell-by-cell manipulation (changing the state from dead to alive with a button click)
+3. ~~Enable cell-by-cell manipulation (changing the state from dead to alive with a button click)~~
 4. Make cell image size different (to fit various screens/cell numbers), possible to choose
 5. Enable saving the state and settings(YAML), loading them the next time program starts
 
