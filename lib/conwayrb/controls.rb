@@ -30,10 +30,10 @@ module Conway
 
         pack_start(create_control('Next generation', :next_gen))
         @loop_ctrls_hbox = Gtk::Box.new(:horizontal)
-        @loop_ctrls_hbox.pack_start(create_control('Run in loop', :loop))
-        @loop_ctrls_hbox.pack_start(create_control('Stop', :stop))
-        @loop_ctrls_hbox.pack_start(create_control('Reset', :reset))
-        pack_start(@loop_ctrls_hbox)
+        @loop_ctrls_hbox.pack_start(create_control('Run in loop', :loop), expand: true, fill: true)
+        @loop_ctrls_hbox.pack_start(create_control('Stop', :stop), expand: true, fill: true)
+        @loop_ctrls_hbox.pack_start(create_control('Reset', :reset), expand: true, fill: true)
+        pack_start(@loop_ctrls_hbox) 
 
       end
       

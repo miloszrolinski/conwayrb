@@ -47,8 +47,8 @@ module Conway
         @controls = Conway::Interface::Controls.new
         @controls.disable([:stop])
 
-        @main_vbox.pack_start(@cell_table)
-        @main_vbox.pack_start(@controls, expand: false)
+        @main_vbox.pack_start(@cell_table, expand: true, fill: true)
+        @main_vbox.pack_start(@controls, expand: false, fill: true)
 
         status_bar = Gtk::Statusbar.new
         context = status_bar.get_context_id('Values')
@@ -106,7 +106,7 @@ module Conway
           @controls.enable([:next_gen, :loop, :reset, :stop])
           @controls.disable([:stop])
 
-          @main_vbox.pack_start(@cell_table)
+          @main_vbox.pack_start(@cell_table, expand: true, fill: true)
           @main_vbox.reorder_child(@cell_table, Gtk::PackType::START)
         end
       end
@@ -120,7 +120,7 @@ module Conway
                                                        @default_live_cells,
                                                        @img_size)
         @cell_table.restart_game!(game)
-        @main_vbox.pack_start(@cell_table)
+        @main_vbox.pack_start(@cell_table, expand: true, fill: true)
         @main_vbox.reorder_child(@cell_table, Gtk::PackType::START)
       end
 

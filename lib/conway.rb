@@ -19,6 +19,6 @@
 
 require_relative './conwayrb/deps.rb'
 
-Gtk.init
+#Gtk.init
 Conway::Interface::Settings.new
 Gtk.main
