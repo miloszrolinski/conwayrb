@@ -10,16 +10,21 @@ Gem::Specification.new do |spec|
   spec.email = ['rolinski.m@gmail.com']
   spec.license = 'GPL-3.0'
   spec.files = ['lib/conway.rb',
-                'lib/conwayrb/deps.rb',
-                'lib/conwayrb/cells.rb',
+                'assets/circle_25px.png',
+                'assets/cross_25px.png',
+                'assets/circle_50px.png',
+                'assets/cross_50px.png', 
+                'lib/conwayrb/cell_button.rb',
                 'lib/conwayrb/cell_table.rb',
-                'lib/conwayrb/game.rb',
-                'lib/conwayrb/window.rb',
-                'lib/conwayrb/settings.rb',
-                'lib/conwayrb/option.rb',
+                'lib/conwayrb/cells.rb',
                 'lib/conwayrb/controls.rb',
-                'assets/circle.png',
-                'assets/cross.png' ]
+                'lib/conwayrb/deps.rb',
+                'lib/conwayrb/option/option_combo.rb',
+                'lib/conwayrb/option/option_entry.rb',
+                'lib/conwayrb/option/option.rb',
+                'lib/conwayrb/settings.rb',
+                'lib/conwayrb/version.rb',
+                'lib/conwayrb/window.rb']
   spec.executables << 'conwayrb'
   spec.add_runtime_dependency('gtk3', '~> 2.2')
   spec.homepage = 'https://github.com/cookieburra/conwayrb'
