@@ -54,7 +54,7 @@ module Conway
           @cells = Conway::Cells.new(size)
           @cells.add_life!(@starting_lives)
         else
-          @cells= game
+          @cells = game
         end
 
         populate!
