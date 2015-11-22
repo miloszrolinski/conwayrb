@@ -30,7 +30,8 @@ module Conway
         self.spacing = 5
 
         pack_start(label, expand: false)
-        pack_start(@option_value, expand: true)
+        # @option_value must be declared by the child of Option
+        pack_start(@option_value, expand: true, fill: true)
 
         unit = Gtk::Label.new(desc)
         unit.width_chars = 8

@@ -78,14 +78,28 @@ module Conway
       live_neighbours
     end
 
+    def map_of_alives
+      alives = Array.new(@size) { Array.new(@size, 0) }
+      every_cell do |x, y|
+        if alive?(x, y)
+          Neighbours.all(x, y, @size).each do |rel_x, rel_y|
+            alives[y + rel_y][x + rel_x] +=1
+          end
+        end
+      end
+
+      alives
+    end
+
     def proceed!
       new_array = Array.new(@size) { Array.new(@size, false) }
+      live_neighbour_map = map_of_alives
 
       every_cell do |x, y|
         if alive?(x, y)
-          new_array[y][x] = (2..3).include? live_neighbours(x, y)
+          new_array[y][x] = (2..3).include? live_neighbour_map[y][x]
         else
-          new_array[y][x] = (live_neighbours(x, y) == 3)
+          new_array[y][x] = (live_neighbour_map[y][x] == 3)
         end
       end
 
