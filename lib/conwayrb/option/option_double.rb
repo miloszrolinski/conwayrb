@@ -20,12 +20,19 @@ module Conway
     # Includes a name of the property, input box and a checkbox to allow
     # for random values. The last one can be disabled and replaced with a
     # longer description of the input value (to explain the units for example).
-    class OptionEntry < Option
+    class OptionDouble < Option
       def initialize(name, with_random, desc)
 
-        @option_value = Gtk::Entry.new
-        @option_value.max_length = 2
-        @option_value.width_chars = 4
+        @option_value = Gtk::Box.new(:horizontal)
+        first_entry, second_entry = Gtk::Entry.new, Gtk::Entry.new
+        first_entry.max_length = 2
+        second_entry.max_length = 2
+
+        first_entry.width_chars = 4
+        second_entry.width_chars = 4
+
+        @option_value.pack_start(first_entry)
+        @option_value.pack_start(second_entry)
 
         super(name, with_random, desc)
       end
@@ -34,12 +41,18 @@ module Conway
         if @toggle.active?
           rand(7) + 3
         else
-          @option_value.text.to_i
+          output = Array.new
+          @option_value.children.each do |entry|
+            output << entry.text.to_i
+          end
+          return output
         end
       end
 
       def value=(property_value)
-        @option_value.text = property_value.to_s
+        @option_value.children.each do |entry|
+          entry.text = property_value.to_s
+        end
       end
 
     end # ... of class Option

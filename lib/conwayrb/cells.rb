@@ -24,18 +24,19 @@ module Conway
   # Contains convenience methods for checking cell's status and looping through
   # the whole table and running a lambda over each cell.
   class Cells
-    attr_reader :size
 
-    def initialize(size)
-      if size < 0
+    def initialize(size_x, size_y)
+      if size_x < 0 or size_y < 0
         fail(ArgumentError, 'Cells.new -> size cannot be negative!')
-      elsif !size.is_a?(Fixnum)
+      elsif !size_x.is_a?(Fixnum) or !size_y.is_a?(Fixnum)
         fail(ArgumentError, 'Cells.new -> size has to be numeric!')
       end
 
-      @size = size
+      @size_x = size_x
+      @size_y = size_y
 
-      @array = Array.new(size) { Array.new(size, false) }
+
+      @array = Array.new(size_y) { Array.new(size_x, false) }
     end
 
     def alive?(x, y)
@@ -46,15 +47,19 @@ module Conway
       @array[y][x] = self.alive?(x, y) ? false : true
     end
 
+    def size
+      [@size_x, @size_y]
+    end
+
     def add_life!(new_live_cells)
-      if new_live_cells + self.total_lives > size**2
+      if new_live_cells + self.total_lives > size.inject(1) { |a, b| a * b }
         raise(ArgumentError, 'Cannot add that many lives')
       end
       remaining_cells = new_live_cells
 
       while remaining_cells > 0
-        x = rand(@size)
-        y = rand(@size)
+        x = rand(@size_x)
+        y = rand(@size_y)
 
         unless alive?(x, y)
           @array[y][x] = true
@@ -79,10 +84,10 @@ module Conway
     end
 
     def map_of_alives
-      alives = Array.new(@size) { Array.new(@size, 0) }
+      alives = Array.new(@size_y) { Array.new(@size_x, 0) }
       every_cell do |x, y|
         if alive?(x, y)
-          Neighbours.all(x, y, @size).each do |rel_x, rel_y|
+          Neighbours.all(x, y, @size_x, @size_y).each do |rel_x, rel_y|
             alives[y + rel_y][x + rel_x] +=1
           end
         end
@@ -92,7 +97,7 @@ module Conway
     end
 
     def proceed!
-      new_array = Array.new(@size) { Array.new(@size, false) }
+      new_array = Array.new(@size_y) { Array.new(@size_x, false) }
       live_neighbour_map = map_of_alives
 
       every_cell do |x, y|
@@ -108,8 +113,8 @@ module Conway
 
     # Accepts a block, which can use the |x, y| coordinates of the cell
     def every_cell
-      (0...@size).each do |y|
-        (0...@size).each do |x|
+      (0...@size_y).each do |y|
+        (0...@size_x).each do |x|
           yield(x, y) if block_given?
         end
       end
@@ -119,11 +124,11 @@ module Conway
   # Neighbours class manages providing the (relative) coordinates of a cell's
   # neighbours.
   class Neighbours
-    def self.all(x, y, limit)
+    def self.all(x, y, limit_x, limit_y)
       neighbours = []
-      neighbours.push(*diagonal(x, y, limit))
-      neighbours.push(*vertical(y, limit))
-      neighbours.push(*horizontal(x, limit))
+      neighbours.push(*diagonal(x, y, limit_x, limit_y))
+      neighbours.push(*vertical(y, limit_y))
+      neighbours.push(*horizontal(x, limit_x))
 
       neighbours
     end
@@ -138,9 +143,9 @@ module Conway
       y_range.size == 2 ? [0, 0].zip(y_range) : [[0, y_range[0]]]
     end
 
-    def self.diagonal(x, y, limit)
-      x_range = horizontal(x, limit)
-      y_range = vertical(y, limit)
+    def self.diagonal(x, y, limit_x, limit_y)
+      x_range = horizontal(x, limit_x)
+      y_range = vertical(y, limit_y)
       diag_range = []
 
       x_range.each do |x_off, _x|

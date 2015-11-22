@@ -22,10 +22,10 @@ module Conway
     # item that can be placed in a GTK window for showing.
     class CellTable < Gtk::Table
       attr_reader :cells
-      def initialize(edge_size, initial_live_cells, img_size)
-        super(edge_size, edge_size)
+      def initialize(*edge_size, initial_live_cells, img_size)
+        super(*edge_size)
 
-        @cells = Conway::Cells.new(edge_size)
+        @cells = Conway::Cells.new(*edge_size)
         @cells.add_life!(initial_live_cells)
         @starting_lives = initial_live_cells
         @img_size = img_size
@@ -51,7 +51,7 @@ module Conway
         children.each { |child| child.destroy }
         if game == nil
           size = @cells.size
-          @cells = Conway::Cells.new(size)
+          @cells = Conway::Cells.new(*size)
           @cells.add_life!(@starting_lives)
         else
           @cells = game

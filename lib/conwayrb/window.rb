@@ -19,7 +19,7 @@ module Conway
     # MainWindow holds the program GUI representation, which includes the
     # hard-coded layout and callbacks.
     class MainWindow < Gtk::Window
-      def initialize(edge_size, initial_live_cells, refresh_speed, img_size)
+      def initialize(*edge_size, initial_live_cells, refresh_speed, img_size)
         super('Conway\'s game of life')
 
         set_size_request(300, 400)
@@ -40,7 +40,7 @@ module Conway
       def set_layout
         @main_vbox = Gtk::Box.new(:vertical)
         @main_vbox.spacing = 5
-        @cell_table = Conway::Interface::CellTable.new(@edge_size,
+        @cell_table = Conway::Interface::CellTable.new(*@edge_size,
                                                        @default_live_cells,
                                                        @img_size)
 
@@ -53,7 +53,7 @@ module Conway
         status_bar = Gtk::Statusbar.new
         context = status_bar.get_context_id('Values')
         status_bar.push(context,
-                        "Edge size: #{@edge_size}\t"+
+                        "Edge size: #{@edge_size.join('x')}\t"+
                         "Initial live cells: #{@default_live_cells}\t"+
                         "Refresh speed: #{@refresh_speed} generations/sec")
 
@@ -99,7 +99,7 @@ module Conway
 
         @controls.access[:reset].signal_connect('clicked') do
           @cell_table.destroy
-          @cell_table = Conway::Interface::CellTable.new(@edge_size,
+          @cell_table = Conway::Interface::CellTable.new(*@edge_size,
                                                          @default_live_cells,
                                                          @img_size)
 
@@ -116,7 +116,7 @@ module Conway
         game = @cell_table.cells
 
         @cell_table.destroy
-        @cell_table = Conway::Interface::CellTable.new(@edge_size,
+        @cell_table = Conway::Interface::CellTable.new(*@edge_size,
                                                        @default_live_cells,
                                                        @img_size)
         @cell_table.restart_game!(game)
